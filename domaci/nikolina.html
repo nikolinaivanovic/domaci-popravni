@@ -1,0 +1,143 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" 
+    crossorigin="anonymous"></script>
+    <script src="items.js"></script>
+    
+    <script >
+        const renderTableRow = (item) => {
+    const $tableRow = $('<tr></tr>');
+    const $RowNaziv = $(`<td>${item.naziv}</td>`);
+    const $RowCena = $(`<td>${item.cena}</td>`);
+    const $RowKomada = $(`<td class="quantity-container"></td>`);
+    const $increaseButton = $(`<button class="increase-btn">+</button>`);
+    const $decreaseButton = $(`<button class="decrease-btn">-</button>`);
+    const $quantityDisplay = $(`<span class="quantity-display">${item.komada}</span>`);
+    const $totalPrice = $(`<td class="total-price">${item.komada * item.cena}</td>`);
+
+    $tableRow.append($RowNaziv);
+    $tableRow.append($RowCena);
+    $RowKomada.append($decreaseButton);
+    $RowKomada.append($quantityDisplay);
+    $RowKomada.append($increaseButton);
+    $tableRow.append($RowKomada);
+    $tableRow.append($totalPrice);
+
+    if (item.pustanja >= 1000) {
+        $RowNaziv.css({ color: 'black', fontWeight: 'bold' });
+        $RowCena.css({ color: 'black', fontWeight: 'bold' });
+        $RowKomada.css({ color: 'black', fontWeight: 'bold' });
+        $totalPrice.css({ color: 'black', fontWeight: 'bold'})
+    }
+
+    $increaseButton.click(() => {
+        item.komada++;
+        $quantityDisplay.text(item.komada);
+        $totalPrice.text(item.komada * item.cena);
+        updateTotalPrice();
+    });
+
+    $decreaseButton.click(() => {
+        if (item.komada > 0) {
+            item.komada--;
+            $quantityDisplay.text(item.komada);
+            $totalPrice.text(item.komada * item.cena);
+            updateTotalPrice();
+        }
+    });
+
+    return $tableRow;
+};
+
+const updateTotalPrice = () => {
+    let total = 0;
+    $(".total-price").each(function() {
+        total += Number($(this).text()) || 0;
+    });
+    $("#total-price").text(total);
+};
+
+const renderTable = (list) => {
+    list.forEach(element => {
+        $("#table").append(renderTableRow(element))
+    });
+    updateTotalPrice();
+}
+  const addItem = () => {
+            let val1 = $("#new-item-input1").val()
+            console.log(val1)
+            let val2 = $("#new-item-input2").val()
+            console.log(val2)
+            let val3 = $("#new-item-input3").val()
+            console.log(val3)
+            const tableRow = {
+                naziv: val1,
+                cena: val2,
+                komada:val3
+            }
+            if(val1 == "" || val2 == "" || val3=="" )
+                    alert("neko polje nije popunjeno")
+            else
+                $("#table")
+                    .append(renderTableRow(tableRow))
+                    updateTotalPrice();
+            let input1 = document.getElementById('new-item-input1');
+            input1.value = "";
+            let input2 = document.getElementById('new-item-input2');
+            input2.value = "";
+            let input3 = document.getElementById('new-item-input3');
+            input3.value = "";
+        }
+
+    </script>
+</head>
+<body onload="renderTable(items)">
+    <div  >
+        <table id="table" style="width: 80%;" >
+            <thead>
+                <tr>
+
+                    <th style="text-align: left;">Naziv</th>
+              
+                    <th style="text-align: left;">Cena</th>
+              
+                    <th style="text-align: left;">Količina</th>
+              
+                    <th style="text-align: left;">Ukupna cena</th>
+              
+                    
+              
+                  </tr>
+
+            </thead>
+            <tfoot>
+                <td>
+                    <form action="">
+                    <input type="text" id="new-item-input1">
+                    </form>  
+                </td>
+                <td>
+                    <form action="">
+                        <input type="text" id="new-item-input2">
+                        </form>
+                </td>
+                <td>
+                    <form action="">
+                        <input type="text" id="new-item-input3">
+                        </form>
+                </td>
+                
+                <td id="total-price"></td>
+                
+                <td>
+                    <button type="button" onclick="addItem()">Dodaj</button>
+                </td>
+            </tfoot>
+            
+        </table>
+    </div>
+</body>
+</html>
